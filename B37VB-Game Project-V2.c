@@ -1,17 +1,19 @@
+//James Dickson Game Project
 //* This code was taken from an online source
 #include <stdio.h>
 #include <stdlib.h> //*
 #include <time.h> //*
+#include <conio.h> //*
 
-//Variables:
+//Variables: 
 int total_score = 0; //This is the total score across all rounds
 int round_score = 0; //This is the total score across the current round
-int score_win = 1; //the point you gain for each roll
+int score_win = 1; //The point(s) you gain for each roll
 int bonus_score_win = 5;//The bonus point gained for getting blackjack
 int blackjack = 21;
-char answer; //Yes or No
+char answer[3]; //Yes or No
 int round_number = 1; //initial round number
-int total_dice_roll = 0; //This is the sum of dice rolls in the current round
+int difference; // How far is the player from 21?
 
 int main() {
   printf("Hello, welcome to my game.\n"
@@ -26,61 +28,48 @@ int main() {
   "Try to see how many points you can get in the 3 rounds you are given.\n\n");
   
 printf("Press SPACE to start the game.\n\n");
-getch();
+getch(); //*
 
 for (round_number = 1; round_number <= 3; round_number++)
 {
-  printf("Press SPACE to start round %d.\n\n", round_number);
-  getch();
+    int total_dice_roll = 0; //This is the sum of dice rolls in the current round
 
-  int total_dice_roll = 0; //This is the sum of dice rolls in the current round
+  printf("ROUND %d IS STARTING!!!\n", round_number);
+
+  do {
+
+  printf("Press SPACE to roll the dice...\n\n");
+  getch(); //*
 
   srand(time(0)); //*
   int dice_roll = ((rand() % 6) + 1); //* Generating a random number between 1-6
-  printf("You rolled a %d!\n\n",dice_roll);
+  total_score = total_score + score_win;
+  printf("You rolled a %d!\n",dice_roll);
   
-  total_dice_roll = total_dice_roll + dice_roll; //updating the current number the player is on
+  total_dice_roll = total_dice_roll + dice_roll;
+  difference = blackjack - total_dice_roll;
 
-  if (total_dice_roll == blackjack) { //Did the player reach 21? Yes, End round and add their round points to their total score.
+  if (difference >= 0) {
+    printf("You are now on %d and are only %d away from blackjack!\n\n", total_dice_roll, difference);
+    printf("Do you wish to roll again?\n");
+    scanf("%s",answer);
+  }
+  else {
+    printf("You are now on %d!\n", total_dice_roll);
+  }
+  } while (total_dice_roll < blackjack);
 
-    round_score = round_score + bonus_score_win ; //gains bonus points for blackjack
-    total_score = total_score + round_score; //updating total score
-
-    printf("You got Blackjack, you earn 5 bonus points!\n" 
-    "Your total score for that round was %d.\n"
-    "Your total score across all rounds is now %d.\n"
-    "You will now start the next round.\n\n", round_score, total_score); 
-
+if (total_dice_roll == blackjack) {
+    printf("Congratulations, You landed on 21!\nYou will recieve an extra 5 points!\n\n");
+    total_score = total_score + bonus_score_win;
+}
+else {
+    printf("Oh no, you overshot 21. You lose!\nYour total points accross all rounds was %d!\n\n", total_score);
     break;
+}
+
   }
 
-  else if (total_dice_roll > blackjack) { //Did the player surpass 21? Yes, They lose, print final score and end game.
-    printf("You have surpassed 21 therefor you lose.\n Game Over!\n");
-    printf("Your final total score was %d\n\n", total_score);
+printf("Thank you for playing! Your final score was %d.\nPlay again and see if you can beat your last score!",total_score);
 
-    return 0;
-  }
-
-  else { //The player is yet to reach 21? Do they wish to continue rolling?
-    round_score = round_score + score_win; //gains a point
-    printf("Your now on %d.\n Would you like to roll again? (Y/N)\n",total_dice_roll); //The round is still playing out. New loop to see if they wish to continue.
-    scanf("%c", answer);
-
-    if (answer == "Y") { //If they wish to continue round, exit loop, let them roll again.
-      break;
-    }
-
-    else if (answer == "N"); { //If they wish to end round, exit both loops.
-    printf("Your total number of points for that round was %d\n", round_score);
-    printf("Your total score across all rounds is currently %d\n\n", total_score);
-    break; 
-    }
-
-  break;
-  }
-
-  return 0;
-
-} 
-printf("Thank you for playing! Your final score was %d.\nPlay again and see if you can beat it!",total_score);
 }
